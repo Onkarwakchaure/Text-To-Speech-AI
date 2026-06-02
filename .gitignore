@@ -1,0 +1,8 @@
+venv/
+output/
+__pycache__/
+*.wav
+*.mp3
+*.pt
+*.pth
+*.log
