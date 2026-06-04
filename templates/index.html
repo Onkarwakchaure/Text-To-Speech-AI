@@ -155,6 +155,27 @@ audio{
         placeholder="Enter your text here..."
     ></textarea>
 
+    <select id="voiceMode" onchange="toggleVoiceUpload()">
+        <option value="ana">Ana Florence</option>
+        <option value="clone">Clone My Voice</option>
+    </select>
+
+    <div id="voiceUploadContainer" style="display:none;">
+        <input
+            type="file"
+            id="voiceFile"
+            accept=".wav"
+            style="
+                width:100%;
+                margin-top:15px;
+                padding:12px;
+                background:#111827;
+                color:white;
+                border-radius:10px;
+            "
+        >
+    </div>
+
     <select id="lang">
         <option value="en">English</option>
         <option value="hi">Hindi</option>
@@ -181,7 +202,25 @@ audio{
 
 <script>
 
+function toggleVoiceUpload(){
+
+    const mode =
+        document.getElementById("voiceMode").value;
+
+    const uploadContainer =
+        document.getElementById("voiceUploadContainer");
+
+    if(mode === "clone"){
+        uploadContainer.style.display = "block";
+    }
+    else{
+        uploadContainer.style.display = "none";
+    }
+}
+
 async function generateAudio(){
+    
+    console.log("Generate button clicked");
 
     const text = document.getElementById("text").value;
     const lang = document.getElementById("lang").value;
@@ -194,10 +233,25 @@ async function generateAudio(){
     const loader = document.getElementById("loader");
     loader.style.display = "block";
 
+    const voiceMode = document.getElementById("voiceMode").value;
+
     const formData = new FormData();
 
     formData.append("text", text);
     formData.append("lang", lang);
+    formData.append("voice_mode", voiceMode);
+
+    if(voiceMode === "clone"){
+
+        const voiceFile = document.getElementById("voiceFile").files[0];
+
+        if(!voiceFile){
+            alert("Please upload a voice sample!");
+            return;
+        }
+
+        formData.append("voice", voiceFile);
+    }
 
     const response = await fetch("/generate",{
         method:"POST",
