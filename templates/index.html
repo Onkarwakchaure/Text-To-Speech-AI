@@ -260,6 +260,12 @@ async function generateAudio(){
 
     const data = await response.json();
 
+    if(data.error){
+        loader.style.display = "none";
+        alert(data.error);
+        return;
+    }
+
     loader.style.display = "none";
 
     const player = document.getElementById("audioPlayer");

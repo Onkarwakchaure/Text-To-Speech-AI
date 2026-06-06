@@ -40,6 +40,9 @@ async def generate_audio(request: Request):
     # fallback to English if language missing
     lang = form.get("lang") or "en"
 
+    print("TEXT =", text)
+    print("LANG =", lang)
+
     filename = f"{uuid.uuid4()}.wav"
 
     filepath = f"output/{filename}"
@@ -48,6 +51,7 @@ async def generate_audio(request: Request):
     print("LANG =", lang)
     
     voice_mode = form.get("voice_mode")
+    print("VOICE MODE =", voice_mode)
 
     if voice_mode == "clone":
 
@@ -56,18 +60,29 @@ async def generate_audio(request: Request):
         voice_filename = f"{uuid.uuid4()}.wav"
 
         voice_path = f"uploads/{voice_filename}"
+        print("VOICE FILE =", voice_file.filename)
+        print("VOICE PATH =", voice_path)
 
         with open(voice_path, "wb") as buffer:
             buffer.write(await voice_file.read())
 
     if voice_mode == "clone":
 
-        tts.tts_to_file(
-            text=text,
-            speaker_wav=voice_path,
-            language=lang,
-            file_path=filepath
-        )
+        print("VOICE FILE =", voice_path)
+
+        try:
+            tts.tts_to_file(
+                text=text,
+                speaker_wav=voice_path,
+                language=lang,
+                file_path=filepath
+            )
+
+        except Exception as e:
+            print("\n========== XTTS ERROR ==========")
+            print(e)
+            print("================================\n")
+            return {"error": str(e)}
 
     else:
 
