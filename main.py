@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from TTS.api import TTS
+from pydub import AudioSegment
 
 import os
 import uuid
