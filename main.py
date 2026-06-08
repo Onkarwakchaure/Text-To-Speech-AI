@@ -44,9 +44,9 @@ async def generate_audio(request: Request):
     print("TEXT =", text)
     print("LANG =", lang)
 
-    filename = f"{uuid.uuid4()}.wav"
+    wav_filename = f"{uuid.uuid4()}.wav"
 
-    filepath = f"output/{filename}"
+    wav_path = f"output/{wav_filename}"
 
     print("TEXT =", text)
     print("LANG =", lang)
@@ -58,14 +58,38 @@ async def generate_audio(request: Request):
 
         voice_file = form.get("voice")
 
-        voice_filename = f"{uuid.uuid4()}.wav"
+        original_filename = voice_file.filename
 
-        voice_path = f"uploads/{voice_filename}"
-        print("VOICE FILE =", voice_file.filename)
-        print("VOICE PATH =", voice_path)
+        extension = original_filename.split(".")[-1].lower()
 
-        with open(voice_path, "wb") as buffer:
-            buffer.write(await voice_file.read())
+        print("Uploaded file:", original_filename)
+
+        # MP3 Upload
+        if extension == "mp3":
+
+            mp3_path = f"uploads/{uuid.uuid4()}.mp3"
+
+            with open(mp3_path, "wb") as buffer:
+                buffer.write(await voice_file.read())
+
+            voice_path = f"uploads/{uuid.uuid4()}.wav"
+
+            AudioSegment.from_mp3(mp3_path).export(
+                voice_path,
+                format="wav"
+            )
+
+            print("Converted MP3 to WAV")
+
+        # WAV Upload
+        else:
+
+            voice_path = f"uploads/{uuid.uuid4()}.wav"
+
+            with open(voice_path, "wb") as buffer:
+                buffer.write(await voice_file.read())
+
+            print("Using uploaded WAV directly")
 
     if voice_mode == "clone":
 
@@ -76,7 +100,7 @@ async def generate_audio(request: Request):
                 text=text,
                 speaker_wav=voice_path,
                 language=lang,
-                file_path=filepath
+                file_path=wav_path
             )
 
         except Exception as e:
@@ -91,7 +115,7 @@ async def generate_audio(request: Request):
             text=text,
             speaker="Ana Florence",
             language=lang,
-            file_path=filepath
+            file_path=wav_path
         )
 
     return {
