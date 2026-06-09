@@ -104,9 +104,9 @@ async def generate_audio(request: Request):
             )
 
         except Exception as e:
-            print("\n========== XTTS ERROR ==========")
+            print("\n============ XTTS ERROR ============")
             print(e)
-            print("================================\n")
+            print("===================================\n")
             return {"error": str(e)}
 
     else:
