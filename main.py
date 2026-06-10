@@ -44,15 +44,14 @@ async def generate_audio(request: Request):
     print("TEXT =", text)
     print("LANG =", lang)
 
-    wav_filename = f"{uuid.uuid4()}.wav"
-
-    wav_path = f"output/{wav_filename}"
-
-    print("TEXT =", text)
-    print("LANG =", lang)
+    wav_path = f"output/{uuid.uuid4()}.wav"
     
     voice_mode = form.get("voice_mode")
     print("VOICE MODE =", voice_mode)
+
+    voice_path = None
+    mp3_path = None
+    extension = None
 
     if voice_mode == "clone":
 
@@ -118,6 +117,32 @@ async def generate_audio(request: Request):
             file_path=wav_path
         )
 
+    # Convert WAV -> MP3
+
+    mp3_filename = f"{uuid.uuid4()}.mp3"
+
+    mp3_output_path = f"output/{mp3_filename}"
+
+    AudioSegment.from_wav(wav_path).export(
+        mp3_output_path,
+        format="mp3"
+    )
+
+    print("Converted output WAV to MP3")
+    print("Output MP3 =", mp3_output_path)
+
+    # Delete temporary WAV
+    if os.path.exists(wav_path):
+        os.remove(wav_path)
+
+    if voice_mode == "clone":
+
+        if voice_path and os.path.exists(voice_path):
+            os.remove(voice_path)
+
+        if mp3_path and os.path.exists(mp3_path):
+            os.remove(mp3_path)
+    
     return {
-        "audio_url": f"/output/{filename}"
+        "audio_url": f"/output/{mp3_filename}"
     }
