@@ -3,9 +3,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from TTS.api import TTS
 from pydub import AudioSegment
+from pydub.utils import which
+
+AudioSegment.converter = which("ffmpeg")
 
 import os
 import uuid
+
+os.environ["COQUI_TOS_AGREED"] = "1"
 
 app = FastAPI()
 
@@ -146,3 +151,12 @@ async def generate_audio(request: Request):
     return {
         "audio_url": f"/output/{mp3_filename}"
     }
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000))
+    )
