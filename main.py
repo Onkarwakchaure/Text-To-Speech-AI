@@ -22,12 +22,14 @@ os.makedirs("output", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/output", StaticFiles(directory="output"), name="output")
 
+print("STEP 1")
 print("Loading XTTS v2 model...")
 
 tts = TTS(
     model_name="tts_models/multilingual/multi-dataset/xtts_v2"
 )
 
+print("STEP 2")
 print("XTTS model loaded successfully!")
 
 @app.get("/", response_class=HTMLResponse)
