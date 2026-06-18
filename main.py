@@ -9,13 +9,13 @@ import uuid
 
 app = FastAPI()
 
-# Static folders
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/output", StaticFiles(directory="output"), name="output")
-
 # Create output directory
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("output", exist_ok=True)
+
+# Static folders
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/output", StaticFiles(directory="output"), name="output")
 
 print("Loading XTTS v2 model...")
 
