@@ -29,7 +29,7 @@ tts = TTS(
     model_name="tts_models/multilingual/multi-dataset/xtts_v2"
 )
 
-print("STEP 2")
+print("STEP 1.5")
 print("XTTS model loaded successfully!")
 
 @app.get("/", response_class=HTMLResponse)
