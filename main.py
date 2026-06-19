@@ -25,7 +25,9 @@ app.mount("/output", StaticFiles(directory="output"), name="output")
 print("STEP 1")
 print("Loading XTTS v2 model...")
 
-tts = None
+tts = TTS(
+    model_name="tts_models/multilingual/multi-dataset/xtts_v2"
+)
 
 print("STEP 1.5")
 print("XTTS model loaded successfully!")
